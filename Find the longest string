@@ -1,0 +1,7 @@
+// in this we have to find the longest string in the array such that every prefix of the string is also present in the array
+// we can do it in a naive way by checking for every string in the array and then checking for all its prefixes in the array and then finding the longest string but it will take O(n^2) time complexity
+// we can do it in a better way by using trie data structure we can insert all the strings in the array in the trie and then for each string we can check for all its prefixes in the trie and then find the longest string
+//if all its letter have endofvalue true then we can consider that string as a candidate for longest string and then we can compare it with the longest string found so far and update the longest string if the current string is longer than the longest string found so far
+
+class Solution {
+   

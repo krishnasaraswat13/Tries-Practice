@@ -1,0 +1,55 @@
+import java.util.*;
+public class Main{
+    static class Trie{
+        Trie[] children=new Trie[26];
+        boolean isEndOfWord;
+        Trie(){
+            Arrays.fill(children, null);
+            isEndOfWord=false;
+        }
+
+        public void insert(String word) {
+            Trie node=this;
+            for(char c:word.toCharArray()){
+                int index=c-'a';
+                if(node.children[index]==null){
+                    node.children[index]=new Trie();
+                }
+                node=node.children[index];
+            }
+            node.isEndOfWord=true;
+        }
+        public boolean search(String word) {
+            Trie node=this;
+            for(char c:word.toCharArray()){
+                int index=c-'a';
+                if(node.children[index]==null){
+                    return false;
+                }
+                node=node.children[index];
+            }
+            return node.isEndOfWord;
+        }
+        public boolean startsWith(String prefix) {
+            Trie node=this;
+            for(char c:prefix.toCharArray()){
+                int index=c-'a';
+                if(node.children[index]==null){
+                    return false;
+                }
+                node=node.children[index];
+            }
+            return true; ///in this only is a change with search method we are not checking for isEndOfWord because we just want to check for prefix and not the whole word
+
+    }
+    public static void main(String[] args) {
+        Trie trie = new Trie();
+        trie.insert("apple");
+        System.out.println(trie.search("apple"));   // true
+        System.out.println(trie.search("app"));     // false
+        System.out.println(trie.startsWith("app")); // true
+        trie.insert("app");
+        System.out.println(trie.search("app"));     // true
+    }
+    
+}

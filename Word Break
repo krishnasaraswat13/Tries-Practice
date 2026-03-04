@@ -1,0 +1,88 @@
+class Solution {
+    static class Trie{
+        Trie[] children=new Trie[26];
+        boolean isEndOfWord;
+        Trie(){
+            Arrays.fill(children, null);
+            isEndOfWord=false;
+        }
+    }
+    private Trie trie = new Trie();
+    private Boolean[] memo;
+    
+    public void insert(String word) {
+        Trie node=trie;
+        for(char c:word.toCharArray()){
+            int index=c-'a';
+            if(node.children[index]==null){
+                node.children[index]=new Trie();
+            }
+            node=node.children[index];
+        }
+        node.isEndOfWord=true;
+    }
+    
+    public boolean search(String word) {
+        Trie node=trie;
+        for(char c:word.toCharArray()){
+            int index=c-'a';
+            if(node.children[index]==null){
+                return false;
+            }
+            node=node.children[index];
+        }
+        return node.isEndOfWord;
+    }
+    public boolean sol(String key,int s){
+        if(s==key.length()){
+            return true;
+        }
+        if(memo[s]!=null){
+            return memo[s];
+        }
+        Trie node = trie;
+        for (int i = s; i < key.length(); i++) {
+            int index = key.charAt(i) - 'a';
+            if (node.children[index] == null) break;
+            
+            node = node.children[index];
+            if (node.isEndOfWord && sol(key, i + 1)) {
+                return memo[s] = true;
+            }
+        }
+        return memo[s] = false;
+   
+    }
+    public boolean wordBreak(String key, String[] arr) {
+        // code here
+        memo = new Boolean[key.length()];
+        for(int i=0;i<arr.length;i++){
+            insert(arr[i]);
+        }
+        return sol(key,0);
+        
+    }
+}
+
+//usnig dp
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int n=s.length();
+        HashSet<String> set = new HashSet<>(wordDict);
+        boolean[] dp=new boolean[n+1];
+        dp[0]=true;
+        int maxWordLength = 0;
+        for (String word : wordDict) {
+            maxWordLength = Math.max(maxWordLength, word.length());
+        }
+        for(int i=1;i<=n;i++){
+            for(int j=Math.max(i-maxWordLength,0);j<i;j++){
+                if(dp[j]&& set.contains(s.substring(j,i))){
+                    dp[i]=true;
+                    break;
+                }
+            }
+        }
+        return dp[n];
+    }
+}

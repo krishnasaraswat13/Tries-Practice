@@ -1,0 +1,37 @@
+//in this we nee dto find the count of distinct substrings in a given string means the sbubstring which are different from each other
+//we can do it in a naive way by generating all the substrings and then storing them in a set and then counting the size of the set but it will take O(n^2) time complexity
+//we can do it in a better way by using trie data structure we can insert all the substrings of the given string in the trie and then count the number of nodes in the trie which will give us the count of distinct substrings
+//ans all the substrings can be  called asprefix of all the suffixes of the given string so we can insert all the suffixes of the given string in the trie and then count the number of nodes in the trie which will give us the count of distinct substrings
+
+class Solution {
+    public static int countSubs(String s) {
+        // code here
+        Trie trie=new Trie();
+        for(int i=0;i<s.length();i++){
+            Trie node=trie;
+            for(int j=i;j<s.length();j++){
+                int index=s.charAt(j)-'a';
+                if(node.children[index]==null){
+                    node.children[index]=new Trie();
+                }
+                node=node.children[index];
+            }
+        }
+        return countNodes(trie)-1; //we are subtracting 1 because we are not counting the root node as a substring
+    }
+    public static int countNodes(Trie node){
+        int count=0;
+        for(int i=0;i<26;i++){
+            if(node.children[i]!=null){
+                count+=countNodes(node.children[i]);
+            }
+        }
+        return count+1; //we are adding 1 because we are counting the current node as well
+    }   
+    static class Trie{
+        Trie[] children=new Trie[26];
+        Trie(){
+            Arrays.fill(children, null);
+        }
+    }
+}

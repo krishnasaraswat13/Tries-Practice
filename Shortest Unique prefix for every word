@@ -1,0 +1,62 @@
+// User function Template for Java
+
+class Solution {
+    static class Trie{
+        Trie[] children=new Trie[26];
+        boolean isEndOfWord;
+        int freq;
+        Trie(){
+            Arrays.fill(children, null);
+            isEndOfWord=false;
+            freq=1;
+        }
+    }
+    static Trie trie;
+    
+    static void insert(String word) {
+        Trie node=trie;
+        for(char c:word.toCharArray()){
+            int index=c-'a';
+            if(node.children[index]==null){
+                node.children[index]=new Trie();
+                node=node.children[index];
+                
+            }
+            else{
+                node=node.children[index];
+                node.freq++;
+            }
+           
+        }
+        node.isEndOfWord=true;
+    }
+    static String search(String word,String s) {
+        Trie node=trie;
+        for(char c:word.toCharArray()){
+            int index=c-'a';
+            if(node.children[index].freq==1){
+               s+=c;
+               break;
+            }
+            node=node.children[index];
+            s+=c;
+        }
+        return s;
+    }
+   
+
+    static String[] findPrefixes(String[] arr, int N) {
+        // code here
+       // memo = new Boolean[key.length()];
+       trie=new Trie();
+        for(int i=0;i<arr.length;i++){
+            insert(arr[i]);
+        }
+        trie.freq=-1;
+        String ans[]=new String[arr.length];
+         for(int i=0;i<arr.length;i++){
+             ans[i]=search(arr[i],"");
+         }
+         return ans;
+    }
+};
