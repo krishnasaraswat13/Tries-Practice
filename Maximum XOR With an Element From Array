@@ -1,0 +1,75 @@
+class Solution {
+     class Node{
+        Node links[]=new Node[2];
+        public Node(){
+        }
+        boolean containsKey(int ind){
+            return (links[ind]!=null);
+        }
+        Node get(int ind){
+            return links[ind];
+        }
+        void put(int ind,Node node){
+            links[ind]=node;
+        }
+
+    }
+    class Trie{
+        public Node root;
+        Trie(){
+            root=new Node();
+        }
+        public void insert(int num){
+            Node node=root;
+            for(int i=31;i>=0;i--){
+                int bit=(num>>i) & 1;
+                if(!node.containsKey(bit)){
+                    node.put(bit,new Node());
+                }
+                node=node.get(bit);
+            }
+        }
+        public int getMax(int num){
+            Node node=root;
+            int maxNum=0;
+            for(int i=31;i>=0;i--){
+                int bit=(num>>i)&1;
+                if(node.containsKey(1-bit)){
+                    maxNum=maxNum|(1<<i); //it means 1 bit ko us position pe bhejke set kr dena hai 
+                    node=node.get(1-bit);
+                }
+                else{
+                    node=node.get(bit);
+                }
+            }
+            return maxNum;
+        }
+    }
+    public int[] maximizeXor(int[] arr, int[][] queries) {
+            Arrays.sort(arr);
+            ArrayList<ArrayList<Integer>> quer=new ArrayList<>();
+            int m=queries.length;
+            for(int i=0;i<m;i++){
+                ArrayList<Integer> t=new ArrayList<>();
+                t.add(queries[i][1]);
+                t.add(queries[i][0]);
+                t.add(i);
+                quer.add(t);
+            }
+            Collections.sort(quer,(a,b)->a.get(0)-b.get(0));
+            int idx=0;
+            int n=arr.length;
+            Trie trie=new Trie();
+            int[] ans=new int[m];
+            for(int i=0;i<m;i++){
+                while(idx<n && arr[idx]<=quer.get(i).get(0)){
+                    trie.insert(arr[idx]);
+                    idx++;
+                }
+                int qi=quer.get(i).get(2);
+                if(idx!=0) ans[qi]=trie.getMax(quer.get(i).get(1));
+                else ans[qi]=-1;
+            }
+            return ans;
+    }
+}

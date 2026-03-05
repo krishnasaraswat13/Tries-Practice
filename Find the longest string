@@ -4,4 +4,53 @@
 //if all its letter have endofvalue true then we can consider that string as a candidate for longest string and then we can compare it with the longest string found so far and update the longest string if the current string is longer than the longest string found so far
 
 class Solution {
-   
+    public String longestString(String[] words) {
+         Trie trie=new Trie();
+        for(int i=0;i<words.length;i++){    
+            insert(trie,words[i]);
+        }
+        String longest="";
+        for(int i=0;i<words.length;i++){
+            if(startsWith(trie,words[i])){  //here weee are checking for all the prefixes of the current string if they are present in the trie or not if they are present then we can consider that string as a candidate for longest string and then we can compare it with the longest string found so far and update the longest string if the current string is longer than the longest string found so far
+                if(words[i].length()>longest.length() || (words[i].length()==longest.length() && words[i].compareTo(longest)<0)){
+                    longest=words[i];
+                }
+            }
+        }
+        return longest;
+    }
+    public void insert(Trie trie,String word) {
+
+        Trie node=trie;
+        for(char c:word.toCharArray()){
+            int index=c-'a';
+            if(node.children[index]==null){
+                node.children[index]=new Trie();
+            }
+            node=node.children[index];
+        }
+        node.isEndOfWord=true;
+    }
+    public boolean startsWith(Trie trie,String prefix) {
+        Trie node=trie;
+        for(char c:prefix.toCharArray()){
+            int index=c-'a';
+            if(node.children[index]==null){
+                return false;
+            }
+            node=node.children[index];
+            if(!node.isEndOfWord){ //here we are checking for every element as end of word if any element is not end of word then we can return false because we are checking for all the prefixes of the current string if they are present in the trie or not if they are present then we can consider that string as a candidate for longest string and then we can compare it with the longest string found so far and update the longest string if the current string is longer than the longest string found so far
+                return false;
+            }
+        }
+        return true; 
+    }
+    static class Trie{
+        Trie[] children=new Trie[26];
+        boolean isEndOfWord;
+        Trie(){
+            Arrays.fill(children, null);
+            isEndOfWord=false;
+        }
+    }
+}
